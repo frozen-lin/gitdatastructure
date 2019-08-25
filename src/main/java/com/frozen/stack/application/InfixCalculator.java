@@ -32,18 +32,19 @@ public class InfixCalculator {
             return 0;
         }
         int length = expression.length();
-        String num = "";
+        StringBuilder num = new StringBuilder();
         for (int i = 0; i < length; i++) {
             char ch = expression.charAt(i);
             //字符是数字
             if (Character.isDigit(ch)) {
                 //若是字符串最后一位或下一位不是数字,压入栈中
                 if (i + 1 == length || !Character.isDigit(expression.charAt(i + 1))) {
-                    num += ch;
-                    integerStack.push(Integer.parseInt(num));
-                    num = "";
+                    num.append(ch);
+                    integerStack.push(Integer.parseInt(num.toString()));
+                    //清空字符串
+                    num.setLength(0);
                 } else {
-                    num += ch;
+                    num.append(ch);
                 }
             } else {
                 //若操作符栈为空,直接压入栈

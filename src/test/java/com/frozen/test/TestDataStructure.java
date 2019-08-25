@@ -4,6 +4,7 @@ import com.frozen.entity.Hero;
 import com.frozen.josephu.Josephu;
 import com.frozen.linkedlist.DoubleLinkedList;
 import com.frozen.linkedlist.SingleLinkedList;
+import com.frozen.stack.application.Calculator;
 import com.frozen.stack.application.InfixCalculator;
 import org.junit.Test;
 import com.frozen.sparsearray.SparseArrayUtils;
@@ -130,5 +131,16 @@ public class TestDataStructure {
         InfixCalculator calculator = new InfixCalculator();
         String expression = "32*3*4+5+3/3";
         System.out.println("表达式  "+expression+"="+calculator.calculate(expression));
+    }
+
+    @Test
+    public void testCalculator(){
+        Calculator calculator = new Calculator();
+        String expression = "32*3*4+5+3/3";
+        System.out.println("表达式  "+expression+"="+calculator.calculate(expression).toString());
+        String expression1 = "(3+4)*5-6";
+        System.out.println("表达式  "+expression1+"="+calculator.calculate(expression1).toString());
+        String expression2 = "(3.5+4.7)*52-6.3";
+        System.out.println("表达式  "+expression2+"="+calculator.calculate(expression2).toString());
     }
 }
