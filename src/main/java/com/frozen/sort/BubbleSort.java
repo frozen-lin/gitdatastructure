@@ -1,7 +1,6 @@
 package com.frozen.sort;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @program: datastructure
