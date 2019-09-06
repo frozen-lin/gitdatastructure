@@ -3,6 +3,7 @@ package com.frozen.sort.application;
 import com.frozen.sort.BubbleSort;
 import com.frozen.sort.InsertionSort;
 import com.frozen.sort.SelectionSort;
+import com.frozen.sort.ShellSort;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -27,7 +28,9 @@ public class SortApplication {
         //选择排序
         //SelectionSort.sort(arr);
         //插入排序
-        InsertionSort.sort(arr);
+        //InsertionSort.sort(arr);
+        //希尔排序
+        ShellSort.sort(arr);
         long end = System.currentTimeMillis();
         System.out.println("耗费时间"+(end-start)+"毫秒");
         System.out.println(Arrays.toString(arr));
