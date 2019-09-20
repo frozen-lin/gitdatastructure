@@ -41,6 +41,7 @@ public class BinarySearch {
      * @date : 2019-09-16 19:53
      */
     private static int search(int[] arr, int findValue, int left, int right) {
+        System.out.println("~~二分查找次数~~");
         if (left > right) {
             return -1;
         }
@@ -49,7 +50,7 @@ public class BinarySearch {
         if (midValue == findValue) {
             return midIndex;
         } else if (midValue > findValue) {
-            return search(arr, findValue, 0, midIndex - 1);
+            return search(arr, findValue, left, midIndex - 1);
         } else {
             return search(arr, findValue, midIndex + 1, right);
         }
