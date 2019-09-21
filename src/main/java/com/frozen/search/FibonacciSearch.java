@@ -31,7 +31,7 @@ public class FibonacciSearch {
      * @date : 2019-09-21 12:15
      */
     public static int search(int[] arr, int findValue) {
-        if (arr == null || arr.length < 1) {
+        if (arr == null || arr.length < 1|| findValue < arr[0] || findValue > arr[arr.length-1]) {
             return -1;
         }
         int left = 0;
