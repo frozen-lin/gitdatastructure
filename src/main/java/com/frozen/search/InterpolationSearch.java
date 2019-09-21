@@ -79,9 +79,9 @@ public class InterpolationSearch {
         int searchIndex = left + (findValue - arr[left]) * (right - left) / (arr[right] - arr[left]);
         int searchValue = arr[searchIndex];
         if (findValue > searchValue) {
-            return search(arr, searchIndex + 1, right, findValue);
+            return search(arr,findValue, searchIndex + 1, right);
         } else if (findValue < searchValue) {
-            return search(arr, left, searchIndex - 1, findValue);
+            return search(arr,findValue, left, searchIndex - 1);
         } else {
             return searchIndex;
         }
