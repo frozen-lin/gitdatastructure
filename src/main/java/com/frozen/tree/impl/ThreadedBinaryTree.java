@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.transaction.TransactionRequiredException;
 import java.util.Objects;
 
 /**
@@ -103,8 +104,25 @@ public class ThreadedBinaryTree<T> implements IBinaryTree<T> {
 
     @Override
     public void postOrder() {
+        this.postThreaded();
+        if (Objects.isNull(this.root)) {
+            System.out.println(ThreadedBinaryTree.ROOT_IS_NULL_MSG);
+        } else {
+            postOrder(this.root);
+        }
     }
 
+    public void postOrder(ThreadedTreeNode<T> treeNode){
+        if (!Objects.isNull(treeNode)){
+            if (treeNode.leftType== TREE_NODE_TYPE){
+                postOrder(treeNode.left);
+            }
+            if (treeNode.rightType==TREE_NODE_TYPE){
+                postOrder(treeNode.right);
+            }
+            System.out.println(treeNode);
+        }
+    }
     @Override
     public ThreadedTreeNode<T> delNodeTree(int delNo) {
         return null;
@@ -203,6 +221,40 @@ public class ThreadedBinaryTree<T> implements IBinaryTree<T> {
         }
     }
 
+    public void postThreaded(){
+        if (this.threadedType != POST_THREADED_TYPE) {
+            this.clearThreaded();
+            this.threadedType = POST_THREADED_TYPE;
+            //清空前序节点
+            this.preNode = null;
+            postThreaded(this.root);
+        }
+    }
+
+    /**
+     * <description> 后序线索化 </description>
+     * @param treeNode :
+     * @return : void
+     * @author : lw
+     * @date : 2019-10-29 21:43
+     */
+    public void postThreaded(ThreadedTreeNode<T> treeNode){
+        if (!Objects.isNull(treeNode)){
+            ThreadedTreeNode<T> left = treeNode.left;
+            ThreadedTreeNode<T> right = treeNode.right;
+            postThreaded(left);
+            postThreaded(right);
+            if (Objects.isNull(left)&&!Objects.isNull(this.preNode)){
+                treeNode.left = this.preNode;
+                treeNode.leftType = THREADED_NODE_TYPE;
+            }
+            if (!Objects.isNull(this.preNode)&&Objects.isNull(this.preNode.right)){
+                this.preNode.right = treeNode;
+                this.preNode.rightType = THREADED_NODE_TYPE;
+            }
+            this.preNode = treeNode;
+        }
+    }
     /**
      * <description> 去除线索化 </description>
      *
