@@ -1,10 +1,12 @@
 package com.frozen.entity;
 
+import java.util.Objects;
+
 /**
- * @program: datastructure
- * @description: 英雄实体类
- * @author: lw
- * @create: 2019-08-11 13:48
+ * @program : datastructure
+ * @description : 英雄实体类
+ * @author : lw
+ * @date : 2019-08-11 13:48
  **/
 public class Hero {
 
@@ -42,5 +44,23 @@ public class Hero {
                 "no=" + no +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
+        Hero hero = (Hero) o;
+        return no == hero.no &&
+                Objects.equals(name, hero.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(no, name);
     }
 }
