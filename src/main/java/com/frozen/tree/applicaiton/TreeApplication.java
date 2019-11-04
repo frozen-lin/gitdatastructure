@@ -118,6 +118,7 @@ public class TreeApplication {
         binaryTree.infixOrder();
         System.out.println("--- 前序线索化遍历 ---");
         binaryTree.preOrder();
-
+        System.out.println("--- 后序线索化遍历 ---");
+        binaryTree.postOrder();
     }
 }
