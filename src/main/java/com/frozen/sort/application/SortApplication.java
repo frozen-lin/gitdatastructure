@@ -13,7 +13,7 @@ import java.util.Random;
  **/
 public class SortApplication {
     public static void main(String[] args) {
-        int[] arr = new int[8000000];
+        int[] arr = new int[800000];
         int length = arr.length;
         Random random = new Random();
         for (int i = 0; i < length; i++) {
@@ -34,7 +34,9 @@ public class SortApplication {
         //归并
         //MergeSort.sort(arr);
         //基数
-        RadixSort.sort(arr);
+        //RadixSort.sort(arr);
+        //堆排序
+        HeapSort.sort(arr);
         long end = System.currentTimeMillis();
         System.out.println("耗费时间"+(end-start)+"毫秒");
         //System.out.println(Arrays.toString(arr));
