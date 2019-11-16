@@ -1,9 +1,14 @@
 package com.frozen.tree.applicaiton;
 
 import com.frozen.entity.Hero;
+import com.frozen.entity.WeightValObj;
 import com.frozen.tree.impl.BinaryTree;
+import com.frozen.tree.impl.HuffmanTree;
 import com.frozen.tree.impl.ThreadedBinaryTree;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <program> datastructure </program>
@@ -120,5 +125,15 @@ public class TreeApplication {
         binaryTree.preOrder();
         System.out.println("--- 后序线索化遍历 ---");
         binaryTree.postOrder();
+    }
+    @Test
+    public void testHuffmanTree(){
+        int[] arr = new int[]{13,7,8,3,29,6,1};
+        List<WeightValObj<Integer>> objList = new ArrayList<>();
+        for (int i :arr) {
+            objList.add(new WeightValObj<>(i,i));
+        }
+        HuffmanTree<Integer> huffmanTree = HuffmanTree.buildHuffmanTree(objList);
+        huffmanTree.preOrder();
     }
 }

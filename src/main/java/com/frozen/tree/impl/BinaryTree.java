@@ -17,12 +17,12 @@ import java.util.Objects;
  **/
 @Getter
 @Setter
-public class BinaryTree<T> implements IBinaryTree<T> {
+public class BinaryTree<T> implements IBinaryTree {
     public static final String ROOT_IS_NULL_MSG = "根节点为null无法遍历";
     /**
      * 二叉树根节点
      */
-    private TreeNode<T> root;
+    protected TreeNode<T> root;
 
     /**
      * <description> 前序遍历 </description>
@@ -118,7 +118,7 @@ public class BinaryTree<T> implements IBinaryTree<T> {
     }
 
     @Data
-    public static class TreeNode<T> implements ITreeNode<T> {
+    public static class TreeNode<T> implements ITreeNode,Comparable<TreeNode> {
         private int no;
         private T obj;
         private TreeNode<T> left;
@@ -187,8 +187,8 @@ public class BinaryTree<T> implements IBinaryTree<T> {
         @Override
         public String toString() {
             return "TreeNode{" +
-                    "obj=" + obj +
-                    ", no=" + no +
+                    "no=" + no +
+                    ", obj=" + obj +
                     '}';
         }
 
@@ -310,6 +310,11 @@ public class BinaryTree<T> implements IBinaryTree<T> {
                 return this;
             }
             return null;
+        }
+
+        @Override
+        public int compareTo(TreeNode o) {
+            return Integer.compare(this.no, o.no);
         }
     }
 

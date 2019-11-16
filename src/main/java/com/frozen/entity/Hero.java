@@ -8,7 +8,7 @@ import java.util.Objects;
  * @author : lw
  * @date : 2019-08-11 13:48
  **/
-public class Hero {
+public class Hero{
 
     private int no;
     private String name;

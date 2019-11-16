@@ -18,7 +18,7 @@ import java.util.Objects;
  **/
 @Getter
 @Setter
-public class ThreadedBinaryTree<T> implements IBinaryTree<T> {
+public class ThreadedBinaryTree<T> implements IBinaryTree {
     public static final String ROOT_IS_NULL_MSG = "根节点为null无法遍历";
 
     /**
