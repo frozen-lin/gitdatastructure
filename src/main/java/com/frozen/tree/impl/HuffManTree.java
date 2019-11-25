@@ -3,9 +3,7 @@ package com.frozen.tree.impl;
 
 import com.frozen.entity.WeightValObj;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * <program> datastructure </program>
@@ -14,8 +12,8 @@ import java.util.List;
  * @author : lw
  * @date : 2019-11-05 20:09
  **/
-public class HuffmanTree<T> extends BinaryTree<T> {
-    public static <E> HuffmanTree<E> buildHuffmanTree(List<WeightValObj<E>> objList) {
+public class HuffManTree<T> extends BinaryTree<T> {
+    public static <E> HuffManTree<E> buildHuffmanTree(List<WeightValObj<E>> objList) {
         if (objList == null || objList.isEmpty()) {
             return null;
         }
@@ -36,8 +34,9 @@ public class HuffmanTree<T> extends BinaryTree<T> {
             top.setRight(right);
             nodeList.add(top);
         }
-        HuffmanTree<E> huffmanTree = new HuffmanTree<>();
+        HuffManTree<E> huffmanTree = new HuffManTree<>();
         huffmanTree.setRoot(nodeList.get(0));
         return huffmanTree;
     }
+
 }

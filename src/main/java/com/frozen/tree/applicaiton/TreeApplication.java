@@ -3,11 +3,13 @@ package com.frozen.tree.applicaiton;
 import com.frozen.entity.Hero;
 import com.frozen.entity.WeightValObj;
 import com.frozen.tree.impl.BinaryTree;
-import com.frozen.tree.impl.HuffmanTree;
+import com.frozen.tree.impl.HuffManTree;
+import com.frozen.tree.impl.HuffManTreeCode;
 import com.frozen.tree.impl.ThreadedBinaryTree;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -133,7 +135,17 @@ public class TreeApplication {
         for (int i :arr) {
             objList.add(new WeightValObj<>(i,i));
         }
-        HuffmanTree<Integer> huffmanTree = HuffmanTree.buildHuffmanTree(objList);
+        HuffManTree<Integer> huffmanTree = HuffManTree.buildHuffmanTree(objList);
         huffmanTree.preOrder();
+    }
+
+    @Test
+    public void testHuffmanTreeCode(){
+        String str = "i like like like java do you like a java";
+        HuffManTreeCode huffmanTree = HuffManTreeCode.buildHuffmanTreeCode(str.getBytes());
+        byte[] bytes = huffmanTree.getCodeBytes();
+        System.out.println(Arrays.toString(bytes));
+        byte[] decodeBytes = HuffManTreeCode.decode(bytes, huffmanTree.getHuffManCodesMap(), huffmanTree.getLastByteLength());
+        System.out.println(new String(decodeBytes));
     }
 }
