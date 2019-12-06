@@ -8,6 +8,7 @@ import com.frozen.tree.impl.HuffManTreeCode;
 import com.frozen.tree.impl.ThreadedBinaryTree;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -147,5 +148,19 @@ public class TreeApplication {
         System.out.println(Arrays.toString(bytes));
         byte[] decodeBytes = HuffManTreeCode.decode(bytes, huffmanTree.getHuffManCodesMap(), huffmanTree.getLastByteLength());
         System.out.println(new String(decodeBytes));
+    }
+
+    @Test
+    public void testHuffmanZip(){
+        File originFile = new File("D:\\1.bmp");
+        File targetDir = new File("D:\\zip");
+        HuffManTreeCode.zip(originFile,targetDir,"bmp");
+    }
+
+    @Test
+    public void testHuffmanUnZip(){
+        File unZipFile = new File("D:\\zip\\bmp.huffman");
+        File targetDir = new File("D:\\zip");
+        HuffManTreeCode.unzip(unZipFile,targetDir,"test");
     }
 }

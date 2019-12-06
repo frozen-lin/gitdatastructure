@@ -4,8 +4,10 @@ package com.frozen.tree.impl;
 import com.frozen.entity.WeightValObj;
 import com.frozen.utils.MyUtils;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -16,6 +18,7 @@ import java.util.*;
  * @date : 2019-11-18 22:23
  **/
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class HuffManTreeCode extends HuffManTree<Byte> {
 
     /**
@@ -32,15 +35,19 @@ public class HuffManTreeCode extends HuffManTree<Byte> {
      * 压缩后的byte数组
      */
     private byte[] codeBytes;
+    /**
+     * 压缩文件后缀名
+     */
+    final private static String ZIP_FILE_SUFFIX = ".huffman";
 
     public static HuffManTreeCode buildHuffmanTreeCode(byte[] content) {
         int length = content.length;
         List<WeightValObj<Byte>> byteList = new ArrayList<>();
         Map<Byte, Integer> weightMap = new HashMap<>(length);
         int weight;
-        for (int i = 0; i < length; i++) {
-            weight = weightMap.get(content[i]) == null ? 0 : weightMap.get(content[i]);
-            weightMap.put(content[i], ++weight);
+        for (byte b : content) {
+            weight = weightMap.get(b) == null ? 0 : weightMap.get(b);
+            weightMap.put(b, ++weight);
         }
         Iterator<Map.Entry<Byte, Integer>> iterator = weightMap.entrySet().iterator();
         Map.Entry<Byte, Integer> entry;
@@ -72,9 +79,13 @@ public class HuffManTreeCode extends HuffManTree<Byte> {
     }
 
     public Map<Byte, String> getHuffManCodesMap() {
-        if (!Objects.isNull(this.root) && huffManCodesMap.isEmpty()) {
-            getHuffManCodesMap(this.root.getLeft(), 0, new StringBuilder());
-            getHuffManCodesMap(this.root.getRight(), 1, new StringBuilder());
+        if (!Objects.isNull(root) && huffManCodesMap.isEmpty()) {
+            if (Objects.isNull(root.getLeft()) && Objects.isNull(root.getRight())) {
+                huffManCodesMap.put(root.getObj(), "0");
+            } else {
+                getHuffManCodesMap(root.getLeft(), 0, new StringBuilder());
+                getHuffManCodesMap(root.getRight(), 1, new StringBuilder());
+            }
         }
         return huffManCodesMap;
     }
@@ -130,7 +141,6 @@ public class HuffManTreeCode extends HuffManTree<Byte> {
             int index = 0;
             //初始化byte数组
             byte[] bytes = new byte[(length + 7) / 8];
-            String binStr;
             while (endIndex < length) {
                 beginIndex = endIndex;
                 if (endIndex + 8 < length) {
@@ -193,5 +203,104 @@ public class HuffManTreeCode extends HuffManTree<Byte> {
         int temp = b | 256;
         String binaryString = Integer.toBinaryString(temp);
         return binaryString.substring(binaryString.length() - length);
+    }
+
+    /**
+     * <description> 压缩文件 </description>
+     *
+     * @param originFile : 待压缩的文件
+     * @param targetDir  : 压缩文件生成的路径
+     * @param fileName   :  压缩文件名
+     * @return : void
+     * @author : lw
+     * @date : 2019/11/26 22:09
+     */
+    public static void zip(File originFile, File targetDir, String fileName) {
+        if (!Objects.isNull(originFile) && originFile.exists() && originFile.isFile()) {
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+            try (FileInputStream fips = new FileInputStream(originFile);
+                 ObjectOutputStream oops = new ObjectOutputStream(new FileOutputStream(targetDir.getPath() + File.separatorChar + fileName + ZIP_FILE_SUFFIX))) {
+                String originFileSuffix = StringUtils.substringAfterLast(originFile.getPath(), ".");
+                int length;
+                byte[] bytes = new byte[1024];
+                List<Byte> byteList = new ArrayList<>();
+                while ((length = fips.read(bytes)) != -1) {
+                    for (int i = 0; i < length; i++) {
+                        byteList.add(bytes[i]);
+                    }
+                }
+                byte[] content = MyUtils.byteList2Array(byteList);
+                HuffManTreeCode huffManTreeCode = HuffManTreeCode.buildHuffmanTreeCode(content);
+                byte[] zipBytes = huffManTreeCode.getCodeBytes();
+                Map<Byte, String> codesMap = huffManTreeCode.getHuffManCodesMap();
+                Integer lastByteLength = huffManTreeCode.getLastByteLength();
+                oops.writeObject(zipBytes);
+                oops.writeObject(codesMap);
+                oops.writeObject(lastByteLength);
+                oops.writeObject(originFileSuffix);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * <description>  </description>
+     *
+     * @param zipFile  : 经过huffman压缩过的文件
+     * @param unZipDir : 解压缩生成文件的目录
+     * @param fileName :  解压缩生成的文件
+     * @return : void
+     * @author : lw
+     * @date : 2019/11/29 16:53
+     */
+    public static void unzip(File zipFile, File unZipDir, String fileName) {
+        if (!Objects.isNull(zipFile) && zipFile.isFile()) {
+            //若生成文件夹不存在,创建文件夹
+            if (!unZipDir.exists()) {
+                unZipDir.mkdirs();
+            }
+            try (ObjectInputStream ips = new ObjectInputStream(new FileInputStream(zipFile))) {
+                Object obj;
+                byte[] zipBytes = null;
+                Map<Byte, String> codesMap = null;
+                Integer lastByteLength = null;
+                String originFileSuffix = null;
+                for (int i = 0; i < 4; i++) {
+                    obj = ips.readObject();
+                    if (obj instanceof byte[]) {
+                        //赫夫曼编码字节数组
+                        zipBytes = (byte[]) obj;
+                    } else if (obj instanceof Map) {
+                        //编码Map
+                        codesMap = (Map<Byte, String>) obj;
+                    } else if (obj instanceof Integer) {
+                        //最后一节长度
+                        lastByteLength = (Integer) obj;
+                    } else if (obj instanceof String) {
+                        //文件后缀名
+                        originFileSuffix = (String) obj;
+                    }
+                }
+                if (Objects.isNull(zipBytes)||Objects.isNull(codesMap)||Objects.isNull(lastByteLength)||Objects
+                .isNull(originFileSuffix)) {
+                    throw new RuntimeException("给定的压缩文件有误,不是Huffman压缩文件");
+                }
+                byte[] contents = HuffManTreeCode.decode(zipBytes, codesMap, lastByteLength);
+                try(FileOutputStream fops = new FileOutputStream(unZipDir.getPath()+File.separatorChar+fileName+"."+originFileSuffix);
+                    ByteArrayOutputStream bops = new ByteArrayOutputStream()){
+                    bops.write(contents);
+                    bops.writeTo(fops);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new IllegalArgumentException("参数有误");
+        }
     }
 }
